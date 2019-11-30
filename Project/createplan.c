@@ -1451,6 +1451,8 @@ create_hashjoin_plan(PlannerInfo *root,
 	List	   *hashclauses;
 	HashJoin   *join_plan;
 	Hash	   *hash_plan;
+	//CSI3130
+	Hash	   *hash_outer_plan;
 	// CSI3530 IL FAUT AJOUTER UN AUTRE HASH_PLAN, DEUX AU TOTAL (INNER ET OUTER)
 	// CSI3130 You must add another hash plan, two in total (inner and outer)
 
@@ -1501,7 +1503,8 @@ create_hashjoin_plan(PlannerInfo *root,
 							  hashclauses,
 							  outer_plan,
 							  (Plan *) hash_plan,
-							  // CSI3530 //CSI3130 ...
+							  //CSI3130
+							  (Plan *) hash_plan_outer,
 							  best_path->jpath.jointype);
 
 	copy_path_costsize(&join_plan->join.plan, &best_path->jpath.path);

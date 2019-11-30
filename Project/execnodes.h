@@ -1116,10 +1116,14 @@ typedef struct HashJoinState
 {
 	JoinState	js;				/* its first field is NodeTag */
 	List	   *hashclauses;	/* list of ExprState nodes */
-	HashJoinTable hj_HashTable;
-	uint32		hj_CurHashValue;
-	int			hj_CurBucketNo;
-	HashJoinTuple hj_CurTuple;
+	bool probing_inner;
+
+	HashJoinTuple inner_hj_CurTuple;
+	HashJoinTuple outer_hj_CurTuple;
+	uint32 inner_hj_CurHashValue;
+	uint32 outer_hj_CurHashValue;
+	int inner_hj_CurBucketNo;
+	int outer_hj_CurBucketNo;
 	List	   *hj_OuterHashKeys;		/* list of ExprState nodes */
 	List	   *hj_InnerHashKeys;		/* list of ExprState nodes */
 	List	   *hj_HashOperators;		/* list of operator OIDs */

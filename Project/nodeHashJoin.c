@@ -48,6 +48,7 @@ ExecHashJoin(HashJoinState *node)
 	EState	   *estate;
 	PlanState  *outerNode;
 	// CSI3530 il faut un innerNode aussi //CSI3130 You need an inner node too
+	PlanState  *innerMode;
 	HashState  *hashNode;
 	List	   *joinqual;
 	List	   *otherqual;
@@ -56,8 +57,10 @@ ExecHashJoin(HashJoinState *node)
 	ExprContext *econtext;
 	ExprDoneCond isDone;
 	HashJoinTable hashtable;
+	HashJoinTable outerHashTable;
 	HeapTuple	curtuple;
 	TupleTableSlot *outerTupleSlot;
+	TupleTableSlot *innerTupleSlot;
     // CSI3530 il faut un innerTupleSlot aussi //CSI3130 You need an innerTupleSlot too
 	uint32		hashvalue;
 	int			batchno;
@@ -71,11 +74,13 @@ ExecHashJoin(HashJoinState *node)
 	hashNode = (HashState *) innerPlanState(node);
 	outerNode = outerPlanState(node);
 	// CSI3530 and CSI3130 ...
+	innerMode = innerPlanState(node);
 
 	/*
 	 * get information from HashJoin state
 	 */
-	hashtable = node->hj_HashTable;
+	hashtable = node->inner_hj_HashTable;
+	outerHashTable = node->outer_hj_HashTable;
     // CSI3530 and CSI3130 ...
 	econtext = node->js.ps.ps_ExprContext;
 
