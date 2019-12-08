@@ -25,6 +25,7 @@
 #include "executor/instrument.h"
 #include "executor/nodeHash.h"
 #include "executor/nodeHashjoin.h"
+#include "executor/execnodes.h"
 #include "miscadmin.h"
 #include "parser/parse_expr.h"
 #include "utils/memutils.h"
