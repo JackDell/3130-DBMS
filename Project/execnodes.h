@@ -771,7 +771,7 @@ typedef struct PlanState
 	 * Other run-time state needed by most if not all node types.
 	 */
 	TupleTableSlot *ps_OuterTupleSlot;	/* slot for current "outer" tuple */
-										/* CSI3530 / CSI3130 -slot for current "INNER" tuple */
+	TupleTableSlot *ps_InnerTupleSlot;
 	TupleTableSlot *ps_ResultTupleSlot; /* slot for my result tuples */
 	ExprContext *ps_ExprContext;	/* node's expression-evaluation context */
 	ProjectionInfo *ps_ProjInfo;	/* info for doing tuple projection */
@@ -1110,26 +1110,47 @@ typedef struct MergeJoinState
 typedef struct HashJoinTupleData *HashJoinTuple;
 typedef struct HashJoinTableData *HashJoinTable;
 
-// CSI3530 Beaucoup de modifications a faire ici 
-// CSI3130 You've got to make some serious changes here
 typedef struct HashJoinState
 {
 	JoinState	js;				/* its first field is NodeTag */
 	List	   *hashclauses;	/* list of ExprState nodes */
-	HashJoinTable hj_HashTable;
-	uint32		hj_CurHashValue;
-	int			hj_CurBucketNo;
-	HashJoinTuple hj_CurTuple;
+
+	//CSI3130 ---------------------------------------
+	//CSI3130 added all variabled needed to do symmetric
+	
+	bool inner;
+	bool innerFinished;
+	bool outerFinished;
+	int matches_by_probing_inner;
+	int matches_by_probing_outer;
+	HashJoinTable inner_hj_HashTable;
+	HashJoinTable outer_hj_HashTable;
+	uint32 inner_hj_CurHashValue;
+	uint32 outer_hj_CurHashValue;
+	int inner_hj_CurBucketNo;
+	int outer_hj_CurBucketNo;
+	HashJoinTuple inner_hj_CurTuple;
+	HashJoinTuple outer_hj_CurTuple;
+	TupleTableSlot *hj_InnerTupleSlot;
+	TupleTableSlot *hj_OuterTupleSlot;;
 	List	   *hj_OuterHashKeys;		/* list of ExprState nodes */
 	List	   *hj_InnerHashKeys;		/* list of ExprState nodes */
 	List	   *hj_HashOperators;		/* list of operator OIDs */
-	TupleTableSlot *hj_OuterTupleSlot;
-	TupleTableSlot *hj_HashTupleSlot;
+	TupleTableSlot *inner_hj_HashTupleSlot;
+	TupleTableSlot *outer_hj_HashTupleSlot;
 	TupleTableSlot *hj_NullInnerTupleSlot;
 	TupleTableSlot *hj_FirstOuterTupleSlot;
+	TupleTableSlot *hj_FirstInnerTupleSlot;
+
 	bool		hj_NeedNewOuter;
 	bool		hj_MatchedOuter;
 	bool		hj_OuterNotEmpty;
+
+	//CSI3130--------------------------------------------
+	bool hj_NeedNewInner;
+	bool hj_MatchedInner;
+	bool hj_InnerNotEmpty;
+
 } HashJoinState;
 
 
