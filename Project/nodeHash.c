@@ -175,8 +175,7 @@ HashState *
 ExecInitHash(Hash *node, EState *estate)
 {
 	HashState  *hashstate;
-
-	SO_printf("ExecInitHash: initializing hash node\n");
+	SO_printf("creating hash node\n");
 
 	/*
 	 * create state structure
